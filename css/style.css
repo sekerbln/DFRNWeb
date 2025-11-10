@@ -1088,3 +1088,90 @@ button.link-button {
     }
 }
 
+/* ---------- Publications 页面样式修复 ---------- */
+
+/* 让主标题与内容对齐 */
+.features-container .section-header h2 {
+    text-align: left;
+    font-size: 2em;
+    margin-bottom: 40px;
+    margin-top: 60px;
+    margin-left: 0px; /* 可微调，调节与左边的间距 */
+}
+
+/* 每位作者名字 */
+.publication-list h2 {
+    font-size: 1.6em;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    color: #222;
+    border-left: 4px solid #555;
+    padding-left: 10px;
+}
+
+/* 每篇论文条目 */
+.publication-item {
+    margin-bottom: 25px;
+    padding-left: 20px;
+    border-left: 2px solid #ddd;
+}
+
+.publication-item h3 {
+    font-size: 1.1em;
+    margin-bottom: 4px;
+    color: #333;
+}
+
+.publication-item p {
+    font-size: 0.95em;
+    color: #666;
+    margin-bottom: 6px;
+}
+
+/* “View on Google Scholar” 链接 */
+.publication-item a {
+    color: #0077cc;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.publication-item a:hover {
+    text-decoration: underline;
+}
+
+/* 底部三篇小展示区（quiz-section）排版修复 */
+.quiz-section {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    margin-top: 60px;
+}
+
+.quiz-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.quiz-image-container img {
+    width: 200px;
+    height: auto;
+    border-radius: 10px;
+}
+
+.feature-text h2 {
+    font-size: 1.4em;
+    margin-bottom: 8px;
+}
+
+.feature-text p {
+    color: #555;
+}
+
+/* 让 Publications 页面更紧凑 */
+.features-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
