@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Members – DFRN</title>
+    <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        /* Members page layout */
+        .members-list {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .member-row {
+            display: grid;
+            grid-template-columns: 200px 1fr; /* 左边图片200px，右边文字 */
+            gap: 30px;
+            align-items: start;
+            margin: 40px 0;
+            background: #fff;
+            border-radius: 20px;
+            padding: 20px;
+        }
+
+        .member-photo {
+            width: 200px;
+            height: 200px;
+            border-radius: 20px;
+            object-fit: cover;
+        }
+
+        .member-info h3 {
+            margin: 0 0 10px;
+            font-family: 'PP Telegraf Bold', sans-serif;
+            font-size: 22px;
+            line-height: 1.1;
+        }
+
+        .member-info p {
+            font-family: 'PP Telegraf Regular', sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: justify;
+            margin: 0 0 10px;
+        }
+
+        .section-header {
+            max-width: 1100px;
+            margin: 0 auto 20px auto;
+            padding-left: 10px;
+        }
+        .section-header h2 {
+            font-family: 'PP Telegraf Bold', sans-serif;
+            font-size: 28px;
+            margin: 0;
+            text-align: left;
+        }
+
+        /* Responsive layout */
+        @media (max-width: 768px) {
+            .member-row {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .member-photo {
+                width: 100%;
+                max-width: 320px;
+                height: auto;
+                margin: 0 auto 20px;
+            }
+            .member-info p {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<header class="header">
+    <div class="logo" style="margin-left: 20px;">
+        <span class="logo-full">Decentralised Fabrication Research Network</span>
+        <span class="logo-short">DFRN</span>
+    </div>
+    <button class="contact-button" aria-label="Contact Us">Contact Us</button>
+    <button class="menu-button" id="menu-button">☰</button>
+</header>
+
+<nav class="menu" id="menu">
+    <a href="./index.html">Home</a>
+    <a href="./#about">About</a>
+    <a href="./members.html" aria-current="page">Members</a>
+    <a href="./publications.html">Publications</a>
+</nav>
+
+<div class="features-container" style="margin-top:120px;">
+    <div class="section-header">
+        <h2>Research Members</h2>
+    </div>
+
+    <div class="members-list">
+        <div class="member-row">
+            <img class="member-photo" src="images/Members-Davide.png" alt="Dr. Davide Lombardi">
+            <div class="member-info">
+                <h3>Dr. Davide Lombardi</h3>
+                <p>Dr. Lombardi is a chartered architect and scholar with a Ph.D. in Architecture. His research and professional career span Italy, China, and the UK, focusing on computational tools, blockchain technologies in AEC, and robotic fabrication. As Head of the Department of Architecture at XJTLU, he leads interdisciplinary projects and international collaborations.</p>
+            </div>
+        </div>
+
+        <div class="member-row">
+            <img class="member-photo" src="images/Members-Theo1.png" alt="Dr. Theodoros Dounas">
+            <div class="member-info">
+                <h3>Dr. Theodoros Dounas</h3>
+                <p>Dr. Dounas is a registered architect and Web3 engineer with expertise in generative design, AI, and blockchain. He serves as vice-chair of the European Council on Computing in Construction and contributes to decentralized fabrication systems and smart contract applications in AEC.</p>
+            </div>
+        </div>
+
+        <div class="member-row">
+            <img class="member-photo" src="images/Members-Vele.png" alt="Dr. Jiří Vele">
+            <div class="member-info">
+                <h3>Dr. Jiří Vele</h3>
+                <p>Dr. Vele is an architect and researcher in 3D concrete printing and robotic fabrication. Co-founder of Scoolpt and ArchiDAO, he explores digital construction workflows, algorithmic slicing, and decentralized collaboration in architectural production.</p>
+            </div>
+        </div>
+
+        <div class="member-row">
+            <img class="member-photo" src="images/Members-Giancarlo.png" alt="Mr. Giancarlo Di Marco">
+            <div class="member-info">
+                <h3>Mr. Giancarlo Di Marco</h3>
+                <p>Mr. Di Marco is a Senior Associate Professor and Architectural Engineer focusing on intelligent automation in construction through 3DCP and AI-driven adaptive control. He bridges academia and industry to promote innovation in digital fabrication and sustainable design.</p>
+            </div>
+        </div>
+
+        <div class="member-row">
+            <img class="member-photo" src="images/Members-Hico.png" alt="Mr. Hico McDonald">
+            <div class="member-info">
+                <h3>Mr. Hico McDonald</h3>
+                <p>Mr. McDonald is a Civil and Web3 Engineer integrating civil engineering expertise with blockchain technology. With a decade of project management experience in South Africa and Thailand, he now works in Web3 partnership management and mentors future blockchain developers.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="footer-container">
+        <p>&copy; 2025 DFRN. All rights reserved.</p>
+        <nav class="footer-nav">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Use</a>
+            <a href="#">Contact Us</a>
+        </nav>
+    </div>
+</footer>
+
+<script>
+    function toggleMenu() {
+        const menu = document.getElementById('menu');
+        menu.classList.toggle('show');
+    }
+    document.getElementById('menu-button').addEventListener('click', toggleMenu);
+</script>
+</body>
+</html>

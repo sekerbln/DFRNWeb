@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Publications and academic outcomes of the Decentralised Fabrication Research Network.">
+  <meta name="keywords" content="DFRN, Publications, Academic Outcomes, Research">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+  <title>Publications / Academic Outcomes | DFRN</title>
+</head>
+
+<body>
+<header class="header">
+  <div class="logo" style="margin-left: 20px;">
+    <span class="logo-full">Decentralised Fabrication Research Network</span>
+    <span class="logo-short">DFRN</span>
+  </div>
+  <button class="contact-button" aria-label="Contact Us">Contact Us</button>
+  <button class="menu-button" id="menu-button">☰</button>
+</header>
+
+<nav class="menu" id="menu">
+  <a href="index.html">Home</a>
+  <a href="about.html">About</a>
+  <a href="members.html">Members</a>
+  <a href="publications.html" class="active">Publications</a>
+</nav>
+
+<!-- 主体内容 -->
+<div class="features-container" style="margin-top: 120px;">
+  <div class="section-header">
+    <h2>Publications / Academic Outcomes</h2>
+  </div>
+
+  <div class="quiz-section">
+    <div class="quiz-item">
+      <div class="quiz-image-container">
+        <img src="images/publications.png" alt="Publication 1">
+      </div>
+      <div class="feature-text">
+        <h2>Designing Decentralised Fabrication Systems</h2>
+        <p>Authors: Theodore Dounas, Davide Lombardi, Giancarlo Di Marco</p>
+        <p><a href="#">Read publication →</a></p>
+      </div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-image-container">
+        <img src="images/publications.png" alt="Publication 2">
+      </div>
+      <div class="feature-text">
+        <h2>Concrete 3D Printing and Blockchain Integration</h2>
+        <p>Authors: Hico McDonald, Jiri Vele</p>
+        <p><a href="#">Read publication →</a></p>
+      </div>
+    </div>
+
+    <div class="quiz-item">
+      <div class="quiz-image-container">
+        <img src="images/publications.png" alt="Publication 3">
+      </div>
+      <div class="feature-text">
+        <h2>Exploring Collaborative Fabrication Networks</h2>
+        <p>Authors: DFRN Research Team</p>
+        <p><a href="#">Read publication →</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-container">
+    <p>&copy; 2025 DFRN. All rights reserved.</p>
+    <nav class="footer-nav">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+      <a href="#">Contact Us</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+  function toggleMenu() {
+    const menu = document.getElementById('menu');
+    const body = document.body;
+    menu.classList.toggle('show');
+    if (menu.classList.contains('show')) {
+      body.style.marginLeft = "250px";
+      body.style.marginTop = "250px";
+    } else {
+      body.style.marginLeft = "0";
+    }
+  }
+
+  function checkScreenSize() {
+    const menu = document.getElementById('menu');
+    const menuButton = document.getElementById('menu-button');
+    if (window.innerWidth >= 1024) {
+      menu.classList.add('show');
+      document.body.style.marginLeft = "250px";
+      menuButton.style.display = "none";
+    } else {
+      menu.classList.remove('show');
+      document.body.style.marginLeft = "0";
+      menuButton.style.display = "block";
+    }
+  }
+
+  window.addEventListener('resize', checkScreenSize);
+  window.addEventListener('load', checkScreenSize);
+  document.getElementById('menu-button').addEventListener('click', toggleMenu);
+</script>
+</body>
+</html>
