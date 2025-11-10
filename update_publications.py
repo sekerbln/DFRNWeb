@@ -1,63 +1,80 @@
 from scholarly import scholarly
 from bs4 import BeautifulSoup
+import re
 
-# 🧩 作者列表（使用 Google Scholar ID）
-AUTHORS = [
-    {"name": "Theodoros Dounas", "id": "mP0ZiN4AAAAJ"},
-    {"name": "Davide Lombardi", "id": "GHZNDcAAAAAJ"},
-    {"name": "Jiří Vele", "id": "8eg3EPsAAAAJ"},
-    {"name": "Giancarlo Di Marco", "id": "Cwc7tEIAAAAJ"},
-]
+# === 设置作者 Google Scholar ID ===
+authors = {
+    "Theodoros Dounas": "mP0ZiN4AAAAJ",
+    "Davide Lombardi": "GHZNDcAAAAAJ",
+    "Giancarlo Di Marco": "Cwc7tEIAAAAJ",
+    "Jiří Vele": "8eg3EPsAAAAJ",
+    # 如果以后找到 Hico McDonald 的 ID，在这里加上
+}
 
-# 🧩 初始化 HTML 容器
-soup = BeautifulSoup("<div class='publication-list'></div>", "html.parser")
-pub_list = soup.div
+# === 文件路径 ===
+input_html = "publications.html"
+output_html = "publications.html"
 
-for person in AUTHORS:
-    print(f"🔍 Fetching author: {person['name']} ...")
+def fetch_publications(author_name, author_id):
+    """从 Google Scholar 获取作者的最新出版物"""
+    print(f"🔍 Fetching publications for {author_name}...")
     try:
-        # 通过 ID 直接抓取数据（比搜索名字更稳定）
-        author = scholarly.search_author_id(person['id'])
-        author = scholarly.fill(author, sections=['publications'])
-        print(f"✅ Found author: {author['name']}")
-
-        # 添加作者标题
-        header = soup.new_tag('h2')
-        header.string = author['name']
-        pub_list.append(header)
-
-        # 遍历每篇论文
-        for pub in author['publications'][:10]:  # 仅显示前 10 篇
+        author = scholarly.search_author_id(author_id)
+        scholarly.fill(author, sections=['publications'])
+        publications = []
+        for pub in author['publications'][:10]:  # 获取前 10 篇
             title = pub.get('bib', {}).get('title', 'Untitled')
-            year = pub.get('bib', {}).get('pub_year', '—')
-            venue = pub.get('bib', {}).get('venue', '')
-            pub_url = pub.get('pub_url', '#')
-
-            pub_div = soup.new_tag('div', **{'class': 'publication-item'})
-            
-            # 标题
-            title_tag = soup.new_tag('h3')
-            title_tag.string = title
-            pub_div.append(title_tag)
-
-            # 期刊/会议 + 年份
-            meta_p = soup.new_tag('p')
-            meta_p.string = f"{venue} ({year})"
-            pub_div.append(meta_p)
-
-            # 链接
-            link_a = soup.new_tag('a', href=pub_url, target='_blank')
-            link_a.string = "View on Google Scholar"
-            pub_div.append(link_a)
-
-            pub_list.append(pub_div)
-
+            year = pub.get('bib', {}).get('pub_year', 'N/A')
+            url = pub.get('pub_url', '#')
+            publications.append({
+                "title": title,
+                "year": year,
+                "url": url
+            })
+        return publications
     except Exception as e:
-        print(f"❌ Error fetching {person['name']}: {e}")
-        continue
+        print(f"❌ Error fetching {author_name}: {e}")
+        return []
 
-# 🧩 输出 HTML 文件
-with open("publications_generated.html", "w", encoding="utf-8") as f:
-    f.write(soup.prettify())
+def build_publication_html():
+    """生成 publications 的 HTML 块"""
+    html_content = ""
+    for author_name, author_id in authors.items():
+        pubs = fetch_publications(author_name, author_id)
+        if not pubs:
+            continue
+        html_content += f'<h2>{author_name}</h2>\n'
+        for pub in pubs:
+            html_content += f'''
+            <div class="publication-item">
+              <h3>{pub["title"]}</h3>
+              <p>({pub["year"]})</p>
+              <a href="{pub["url"]}" target="_blank">View on Google Scholar</a>
+            </div>
+            '''
+    return html_content
 
-print("🎉 Done! File saved as publications_generated.html")
+def replace_publications_in_html(new_content):
+    """替换 publications.html 中旧的 <div class="publication-list"> ... </div>"""
+    with open(input_html, "r", encoding="utf-8") as f:
+        soup = BeautifulSoup(f, "html.parser")
+
+    pub_section = soup.find("div", {"class": "publication-list"})
+    if pub_section:
+        pub_section.clear()  # 清空旧内容
+        pub_section.append(BeautifulSoup(new_content, "html.parser"))
+        print("✅ 已替换 publication-list 内容")
+    else:
+        print("⚠️ 未找到 <div class='publication-list'> ，将新建一个。")
+        new_div = soup.new_tag("div", **{"class": "publication-list"})
+        new_div.append(BeautifulSoup(new_content, "html.parser"))
+        soup.body.append(new_div)
+
+    with open(output_html, "w", encoding="utf-8") as f:
+        f.write(str(soup.prettify()))
+
+    print(f"🎉 已更新 {output_html}")
+
+if __name__ == "__main__":
+    html_block = build_publication_html()
+    replace_publications_in_html(html_block)
