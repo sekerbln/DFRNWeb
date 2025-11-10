@@ -33,6 +33,26 @@
     <h2>Publications / Academic Outcomes</h2>
   </div>
 
+  <!-- Filter Bar -->
+  <div class="filter-bar" style="display:flex;gap:12px;align-items:center;margin:10px 0 20px;">
+    <label for="viewMode">View:</label>
+    <select id="viewMode">
+      <option value="all">All (grouped)</option>
+      <option value="newest">Newest (sorted by year)</option>
+    </select>
+
+    <label for="authorFilter">Author:</label>
+    <select id="authorFilter">
+      <option value="all">All authors</option>
+      <option value="Davide Lombardi">Davide Lombardi</option>
+      <option value="Giancarlo Di Marco">Giancarlo Di Marco</option>
+      <option value="Jiří Vele">Jiří Vele</option>
+      <option value="Theodoros Dounas">Theodoros Dounas</option>
+    </select>
+  </div>
+
+
+
   <div class="publication-list">
     <h2>
       Theodoros Dounas
@@ -569,5 +589,145 @@
     window.addEventListener('load', checkScreenSize);
     document.getElementById('menu-button').addEventListener('click', toggleMenu);
   </script>
-  </body>
+
+  <script>
+    (function() {
+      const pubList = document.querySelector('.publication-list');
+      if (!pubList) return;
+
+      // 1) 缓存初始（分组）HTML，用于 "All (grouped)" 模式恢复
+      const originalHTML = pubList.innerHTML;
+
+      // 2) 解析并打标：根据最近的作者 <h2> 推断每条 .publication-item 的 author；从 "(YYYY)" 抽取年份
+      function autorunTagging() {
+        let currentAuthor = '';
+        const nodes = Array.from(pubList.children);
+        nodes.forEach(node => {
+          if (node.tagName === 'H2') {
+            currentAuthor = node.textContent.trim();
+          } else if (node.classList && node.classList.contains('publication-item')) {
+            // 标注作者
+            node.dataset.author = currentAuthor;
+
+            // 找年：优先 <p>(YYYY)</p>，否则在整个文本里抓 "(YYYY)"
+            let year = '';
+            const p = node.querySelector('p');
+            const source = (p ? p.textContent : node.textContent) || '';
+            const match = source.match(/\((\d{4})\)/);
+            if (match) year = match[1];
+            node.dataset.year = year;
+          }
+        });
+      }
+
+      // 初始运行一次
+      autorunTagging();
+
+      // 3) 工具：收集所有 publication-item（当前 DOM）
+      function collectItems() {
+        return Array.from(pubList.querySelectorAll('.publication-item'));
+      }
+
+      // 4) 根据作者过滤
+      function filterByAuthor(items, author) {
+        if (author === 'all') return items;
+        return items.filter(it => (it.dataset.author || '').trim() === author);
+      }
+
+      // 5) 渲染为“Newest”平铺视图（按年份从新到旧），保留标题、年份、链接
+      function renderNewest(author) {
+        const all = collectItems();
+        const filtered = filterByAuthor(all, author);
+
+        // 拿到克隆体，避免移动原节点
+        const clones = filtered.map(it => it.cloneNode(true));
+
+        // 确保克隆体也有 data-year（保险）
+        clones.forEach(it => {
+          if (!it.dataset.year) {
+            const p = it.querySelector('p');
+            const src = (p ? p.textContent : it.textContent) || '';
+            const m = src.match(/\((\d{4})\)/);
+            it.dataset.year = m ? m[1] : '';
+          }
+        });
+
+        // 排序：年份降序；没有年份的排最后
+        clones.sort((a, b) => {
+          const ya = parseInt(a.dataset.year || '0', 10);
+          const yb = parseInt(b.dataset.year || '0', 10);
+          return (isNaN(yb) ? 0 : yb) - (isNaN(ya) ? 0 : ya);
+        });
+
+        // 生成平铺容器
+        const wrapper = document.createElement('div');
+        wrapper.className = 'publication-flat';
+        // 可选：简单样式（不破坏你现有 style.css）
+        wrapper.style.display = 'grid';
+        wrapper.style.gridTemplateColumns = '1fr';
+        wrapper.style.gap = '14px';
+
+        // 每条前面加一个小作者标签（便于识别）
+        clones.forEach(it => {
+          const tag = document.createElement('div');
+          tag.textContent = it.dataset.author || '';
+          tag.style.fontSize = '14px';
+          tag.style.opacity = '0.7';
+          tag.style.marginBottom = '4px';
+
+          const block = document.createElement('div');
+          block.appendChild(tag);
+          block.appendChild(it);
+          wrapper.appendChild(block);
+        });
+
+        // 替换列表内容
+        pubList.innerHTML = '';
+        pubList.appendChild(wrapper);
+      }
+
+      // 6) 恢复 “All (grouped)” 模式（原样）
+      function renderAll(author) {
+        pubList.innerHTML = originalHTML;
+        // 恢复后需要再次打标
+        autorunTagging();
+
+        if (author === 'all') return;
+
+        // 按作者过滤：保留匹配作者的 <h2> 与它下方的条目，其它作者和条目隐藏
+        let currentAuthor = '';
+        Array.from(pubList.children).forEach(node => {
+          if (node.tagName === 'H2') {
+            currentAuthor = node.textContent.trim();
+            node.style.display = (currentAuthor === author) ? '' : 'none';
+          } else if (node.classList && node.classList.contains('publication-item')) {
+            node.style.display = (node.dataset.author === author) ? '' : 'none';
+          }
+        });
+      }
+
+      // 7) 绑定筛选器
+      const viewMode = document.getElementById('viewMode');
+      const authorFilter = document.getElementById('authorFilter');
+
+      function apply() {
+        const mode = viewMode ? viewMode.value : 'all';
+        const who  = authorFilter ? authorFilter.value : 'all';
+        if (mode === 'newest') {
+          renderNewest(who);
+        } else {
+          renderAll(who);
+        }
+      }
+
+      if (viewMode) viewMode.addEventListener('change', apply);
+      if (authorFilter) authorFilter.addEventListener('change', apply);
+
+      // 初始状态：保持 All (grouped) + All authors
+      apply();
+    })();
+  </script>
+
+
+</body>
   </html>
